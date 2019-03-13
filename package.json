@@ -1,6 +1,6 @@
 {
   "name": "telegram-xp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Telegram XP bot",
   "main": "index.js",
   "files": ["index.js"],
