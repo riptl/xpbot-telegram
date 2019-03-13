@@ -91,8 +91,8 @@ async function displayRank(msg, match) {
             try {
                 member = await bot.getChatMember(gid, next[0]);
             } catch (e) {}
-            const rival = member.user || { id: '', first_name: '???' };
-            bot.sendMention(gid, msg.from, `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  ${next[1]-score} to beat ${withUser(rival)}!`)
+            const rival = member.user || { id: '', first_name: '<an unknown user>' };
+            bot.sendMention(gid, msg.from, `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  ${next[1]-score} to beat ${withUser(rival)}`)
         }
     } else {
         bot.sendMention(gid, msg.from, `, your rank is ${rank} / ${total}.`);
