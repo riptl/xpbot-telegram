@@ -1,0 +1,24 @@
+{
+  "name": "telegram-xp",
+  "version": "1.0.0",
+  "description": "Telegram XP bot",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/terorie/telegram-xp.git"
+  },
+  "keywords": [
+    "telegram",
+    "bot"
+  ],
+  "author": "Richard Patel <me@terorie.dev>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/terorie/telegram-xp/issues"
+  },
+  "homepage": "https://github.com/terorie/telegram-xp#readme",
+  "dependencies": {
+    "async-redis": "^1.1.7",
+    "node-telegram-bot-api": "^0.30.0"
+  }
+}
