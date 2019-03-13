@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Telegram XP bot",
   "main": "index.js",
+  "files": ["index.js"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/terorie/telegram-xp.git"
