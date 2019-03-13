@@ -79,7 +79,7 @@ async function displayRank(msg, match) {
         return;
     }
 
-    const rank =  (await redis.zrevrank(key, uid)) + 1;
+    const rank = (await redis.zrevrank(key, uid)) + 1;
     const total = await redis.zcard(key);
 
     if (score >= minXP) {
@@ -87,7 +87,10 @@ async function displayRank(msg, match) {
         if (!next || next.length == 0) {
             bot.sendMention(gid, msg.from, `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  𝙺𝚒𝚗𝚐 𝙽𝙸𝙼𝙸𝚀 👑`);
         } else {
-            const member = await bot.getChatMember(gid, next[0]);
+            let member = {};
+            try {
+                member = await bot.getChatMember(gid, next[0]);
+            } catch (e) {}
             const rival = member.user || { id: '', first_name: '???' };
             bot.sendMention(gid, msg.from, `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  ${next[1]-score} to beat ${withUser(rival)}!`)
         }
