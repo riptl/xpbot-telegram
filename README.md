@@ -14,6 +14,8 @@ Configuration:
  - `$TELEGRAM_TOKEN` BotFather token
  - `$MIN_XP` Minimum XP before pics/vids allowed
  - `$RATE_LIMIT` User cooldown after earning XP (seconds)
+ - `$LESS_BOT_SPAM` Delete /xp and /rank requests + responses after a while to reduce group chat clutter
+ - `$BOT_EXPIRATION` Time to delete bot messages from the group (requires option above)
 
 Commands:
  - `/xp` Get current XP
