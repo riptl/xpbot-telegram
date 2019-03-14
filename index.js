@@ -10,6 +10,8 @@ const redisPrefix = process.env.REDIS_PREFIX || 'TELEGRAM_XP_';
 const telegramToken = process.env.TELEGRAM_TOKEN;
 const minXP = parseInt(process.env.MIN_XP) || 15;
 const rateLimit = parseInt(process.env.RATE_LIMIT) || 15;
+const lessBotSpam = process.env.LESS_BOT_SPAM == "true";
+const botExpiration = (process.env.BOT_EXPIRATION || 3) * 1000;
 
 if (!telegramToken) {
     console.error("Error: $TELEGRAM_TOKEN not set.");
@@ -70,34 +72,36 @@ async function displayRank(msg, match) {
     const key = redisPrefix + gid;
 
     if (msg.chat.type == "private") {
-        bot.sendMessage(gid, "Sorry, you can't gain XP in private chats.");
+        bot.sendMessage(gid, "Sorry, you can't gain XP in private chats.", null, msg);
         return;
     }
 
     const score = await redis.zscore(key, uid);
     if (!score) {
-        bot.sendMention(gid, msg.from, ", you're not ranked yet 👶");
+        bot.sendMention(gid, msg.from, ", you're not ranked yet 👶", msg);
         return;
     }
 
     const rank = (await redis.zrevrank(key, uid)) + 1;
     const total = await redis.zcard(key);
 
+    let message;
     if (score >= minXP) {
         const next = await redis.zrangebyscore(key, parseInt(score) + 2, '+inf', 'withscores', 'limit', 0, 1);
         if (!next || next.length == 0) {
-            bot.sendMention(gid, msg.from, `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  𝙺𝚒𝚗𝚐 𝙽𝙸𝙼𝙸𝚀 👑`);
+            message = `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  𝙺𝚒𝚗𝚐 𝙽𝙸𝙼𝙸𝚀 👑`;
         } else {
             let member = {};
             try {
                 member = await bot.getChatMember(gid, next[0]);
             } catch (e) {}
             const rival = member.user || { id: '', first_name: '<an unknown user>' };
-            bot.sendMention(gid, msg.from, `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  ${next[1]-score} to beat ${withUser(rival)}`)
+            message = `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  ${next[1]-score} to beat ${withUser(rival)}`;
         }
     } else {
-        bot.sendMention(gid, msg.from, `, your rank is ${rank} / ${total}.`);
+        message = `, your rank is ${rank} / ${total}.`;
     }
+    bot.sendMention(gid, msg.from, message, msg);
 }
 
 async function displayTopRanks(msg, match) {
@@ -127,7 +131,8 @@ async function displayTopRanks(msg, match) {
         `🥇 ${withUser(users[0])}: ${scores[1]} XP \n` +
         `🥈 ${withUser(users[1])}: ${scores[3]} XP \n` +
         `🥉 ${withUser(users[2])}: ${scores[5]} XP`,
-        { parse_mode: 'Markdown', disable_notification: true });
+        { parse_mode: 'Markdown', disable_notification: true },
+        msg);
 }
 
 async function moderateContent(msg, match) {
@@ -169,6 +174,22 @@ function withUser(user) {
     //return `[${user.first_name}](tg://user?id=${user.id})`;
 }
 
-bot.sendMention = (gid, user, text) => {
-    bot.sendMessage(gid, withUser(user) + text, { parse_mode: 'Markdown', disable_notification: true });
+bot.originalSendMessage = bot.sendMessage;
+
+bot.sendMessage = async (gid, text, options, queryMsg) => {
+    const msg = await bot.originalSendMessage(gid, text, options);
+    if (lessBotSpam)
+        setTimeout(() => {
+            if (queryMsg)
+                bot.deleteMessage(gid, queryMsg.message_id);
+            bot.deleteMessage(gid, msg.message_id);
+        }, botExpiration);
+}
+
+bot.sendMention = (gid, user, text, queryMsg) => {
+    const options = {
+        parse_mode: 'Markdown',
+        disable_notification: true
+    }
+    bot.sendMessage(gid, withUser(user) + text, options, queryMsg);
 }
