@@ -2,6 +2,7 @@
 
 const redisModule = require('async-redis');
 const TelegramBot = require('node-telegram-bot-api');
+const escapeMD = require('markdown-escape');
 
 // Config
 const redisURL = process.env.REDIS_URL;
@@ -146,7 +147,7 @@ async function moderateContent(msg, match) {
             chatName = ` to ${msg.chat.title}`;
         else
             chatName = '';
-        bot.sendMessage(msg.from.id, `Sorry, but you don't have enough XP to send that${chatName}. Earn more XP by talking😉`);
+        bot.sendMessage(msg.from.id, `Sorry, but you don't have enough XP to send that${escapeMD(chatName)}. Earn more XP by talking😉`);
         await redis.zrem(key, uid);
         return false;
     }
@@ -164,7 +165,7 @@ async function displayHelp(msg, match) {
 }
 
 function withUser(user) {
-    return user.first_name;
+    return escapeMD(user.first_name);
     //return `[${user.first_name}](tg://user?id=${user.id})`;
 }
 
