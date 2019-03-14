@@ -6,7 +6,7 @@ const escapeMD = require('markdown-escape');
 
 // Config
 const redisURL = process.env.REDIS_URL;
-const redisPrefix = process.env.REDIS_PREFIX || 'TELEGRAM_XP_';
+const redisPrefix = process.env.REDIS_PREFIX || 'XPBOT_';
 const telegramToken = process.env.TELEGRAM_TOKEN;
 const minXP = parseInt(process.env.MIN_XP) || 15;
 const rateLimit = parseInt(process.env.RATE_LIMIT) || 15;
@@ -54,7 +54,7 @@ async function incrementXP(msg, match) {
             return;
 
     if (rateLimit) {
-        const ukey = redisPrefix + "_USER_" + uid;
+        const ukey = redisPrefix + "_TGUSER_" + uid;
 
         if (await redis.exists(ukey))
             return;
