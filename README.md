@@ -20,3 +20,7 @@ Configuration:
 Commands:
  - `/xp` Get current XP
  - `/ranks` Get top XP users
+
+Redis keys:
+ - `${REDIS_PREFIX}_${GROUP_ID}` Leaderboard
+ - `${REDIS_PREFIX}_${GROUP_ID}_DELETED_COUNT` Number of messages deleted

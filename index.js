@@ -153,7 +153,8 @@ async function moderateContent(msg, match) {
         else
             chatName = '';
         bot.sendMessage(msg.from.id, `Sorry, but you don't have enough XP to send that${escapeMD(chatName)}. Earn more XP by talking😉`);
-        await redis.zrem(key, uid);
+        redis.zrem(key, uid);
+        redis.incrby(`${redisPrefix}${msg.chat.id}_DELETED_COUNT`, 1);
         return false;
     }
 
