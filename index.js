@@ -141,7 +141,12 @@ async function moderateContent(msg, match) {
 
     if (score < minXP) {
         bot.deleteMessage(msg.chat.id, msg.message_id);
-        bot.sendMention(gid, msg.from, " Sorry, but you don't have enough XP to send that. You can earn XP by talking 😉");
+        let chatName;
+        if (msg.chat.title)
+            chatName = ` to ${msg.chat.title}`;
+        else
+            chatName = '';
+        bot.sendMessage(msg.from.id, `Sorry, but you don't have enough XP to send that${chatName}. Earn more XP by talking😉`);
         await redis.zrem(key, uid);
         return false;
     }
