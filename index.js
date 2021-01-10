@@ -33,7 +33,7 @@ bot.on('document', moderateContent);
 // Commands
 bot.onText(/\/start/,     displayHelp);
 bot.onText(/\/xp(@\w+)?/, displayRank);
-bot.onText(/\/ranks/,     displayTopRanks);
+bot.onText(/\/ranks(@\w+)?/, displayTopRanks);
 
 async function incrementXP(msg, match) {
     const uid = msg.from.id;
@@ -72,7 +72,7 @@ async function displayRank(msg, match) {
     const key = redisPrefix + gid;
 
     if (msg.chat.type == "private") {
-        bot.sendMessage(gid, "Sorry, you can't gain XP in private chats.", null, msg);
+        bot.sendMessageNoSpam(gid, "Sorry, you can't gain XP in private chats.", {}, msg);
         return;
     }
 
@@ -89,7 +89,7 @@ async function displayRank(msg, match) {
     if (score >= minXP) {
         const next = await redis.zrangebyscore(key, parseInt(score) + 2, '+inf', 'withscores', 'limit', 0, 1);
         if (!next || next.length == 0) {
-            message = `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  𝙺𝚒𝚗𝚐 𝙽𝙸𝙼𝙸𝚀 👑`;
+            message = `, you have ${score} XP  ◎  Rank ${rank} / ${total}  ◎  👑`;
         } else {
             let member = {};
             try {
@@ -108,8 +108,9 @@ async function displayTopRanks(msg, match) {
     const gid = msg.chat.id;
     const key = redisPrefix + gid;
 
+    console.log("Displaying top ranks for " + gid);
     if (msg.chat.type == "private") {
-        bot.sendMessage(gid, "Please add me to a group.");
+        bot.sendMessageNoSpam(gid, "Please add me to a group.");
         return;
     }
 
@@ -127,7 +128,7 @@ async function displayTopRanks(msg, match) {
             users[i] = {id: 0, first_name: 'A ghost'};
     }
 
-    bot.sendMessage(gid,
+    bot.sendMessageNoSpam(gid,
         `🥇 ${withUser(users[0])}: ${scores[1]} XP \n` +
         `🥈 ${withUser(users[1])}: ${scores[3]} XP \n` +
         `🥉 ${withUser(users[2])}: ${scores[5]} XP`,
@@ -152,7 +153,7 @@ async function moderateContent(msg, match) {
             chatName = ` to ${msg.chat.title}`;
         else
             chatName = '';
-        bot.sendMessage(msg.from.id, `Sorry, but you don't have enough XP to send that${escapeMD(chatName)}. Earn more XP by talking😉`);
+        bot.sendMessageNoSpam(msg.from.id, `Sorry, but you don't have enough XP to send that${escapeMD(chatName)}. Earn more XP by talking😉`);
         redis.zrem(key, uid);
         redis.incrby(`${redisPrefix}${msg.chat.id}_DELETED_COUNT`, 1);
         return false;
@@ -164,7 +165,7 @@ async function moderateContent(msg, match) {
 async function displayHelp(msg, match) {
     if (msg.chat.type != "private")
         return;
-    bot.sendMessage(msg.chat.id, "Hi, I'm XP Bot. Add me to a group and I will track users' message count (XP). " +
+    bot.sendMessageNoSpam(msg.chat.id, "Hi, I'm XP Bot. Add me to a group and I will track users' message count (XP). " +
         "Available commands:\n" +
         " - /xp displays the XP count and rank of the user\n" +
         " - /ranks displays the top 3");
@@ -175,10 +176,8 @@ function withUser(user) {
     //return `[${user.first_name}](tg://user?id=${user.id})`;
 }
 
-bot.originalSendMessage = bot.sendMessage;
-
-bot.sendMessage = async (gid, text, options, queryMsg) => {
-    const msg = await bot.originalSendMessage(gid, text, options);
+bot.sendMessageNoSpam = async (gid, text, options, queryMsg) => {
+    const msg = await bot.sendMessage(gid, text, options);
     if (lessBotSpam)
         setTimeout(() => {
             if (queryMsg)
@@ -192,5 +191,5 @@ bot.sendMention = (gid, user, text, queryMsg) => {
         parse_mode: 'Markdown',
         disable_notification: true
     }
-    bot.sendMessage(gid, withUser(user) + text, options, queryMsg);
+    bot.sendMessageNoSpam(gid, withUser(user) + text, options, queryMsg);
 }

@@ -1,7 +1,7 @@
 dependencies:
   async-redis: 1.1.7
   markdown-escape: 1.1.0
-  node-telegram-bot-api: 0.51.0
+  node-telegram-bot-api: 0.50.0
 lockfileVersion: 5.2
 packages:
   /ajv/6.12.6:
@@ -377,7 +377,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
-  /node-telegram-bot-api/0.51.0:
+  /node-telegram-bot-api/0.50.0:
     dependencies:
       array.prototype.findindex: 2.1.0
       bl: 1.2.3
@@ -394,7 +394,7 @@ packages:
     engines:
       node: '>=0.12'
     resolution:
-      integrity: sha512-4SYAHBOhm8beNm/Sj6jo67GLbjMKLXejU/gjeIGsPMB9BAap4+ZT9viZkq1xC3t+0JeyQHOMudPp/vwpbK04qA==
+      integrity: sha512-wPGJYb8RDsy2jOaWk51NWjJq+kcFLjJ3xMTYcfjkdK4b81i7d/ptjzsnmVsA31XeO1ZDDm8TwtqSr7CQkVfDVw==
   /oauth-sign/0.9.0:
     dev: false
     resolution:
@@ -649,4 +649,4 @@ packages:
 specifiers:
   async-redis: ^1.1.7
   markdown-escape: ^1.1.0
-  node-telegram-bot-api: ^0.51.0
+  node-telegram-bot-api: ^0.50.0
