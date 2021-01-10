@@ -22,7 +22,7 @@
   "homepage": "https://github.com/terorie/telegram-xp#readme",
   "dependencies": {
     "async-redis": "^1.1.7",
-    "markdown-escape": "^1.0.2",
-    "node-telegram-bot-api": "^0.30.0"
+    "markdown-escape": "^1.1.0",
+    "node-telegram-bot-api": "^0.51.0"
   }
 }
