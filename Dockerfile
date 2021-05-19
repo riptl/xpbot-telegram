@@ -9,3 +9,5 @@ FROM alpine
 RUN apk add --no-cache ca-certificates
 COPY --from=builder /app/xpbot-telegram /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/xpbot-telegram"]
+
+LABEL org.opencontainers.image.source="https://github.com/terorie/xpbot-telegram"

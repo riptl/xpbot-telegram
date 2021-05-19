@@ -158,6 +158,9 @@ func (h *handler) handleMsg(msg *tgbotapi.Message) {
 }
 
 func (h *handler) incrementXP(from *tgbotapi.User, chatID int64) {
+	if from.UserName == "" {
+		return
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	var increment int64 = 1
